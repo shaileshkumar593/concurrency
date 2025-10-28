@@ -1,131 +1,62 @@
 package main
 
-import (
-	"fmt"
-	"os"
-)
+import "fmt"
 
-type Node struct {
-	value int
-	next  *Node
+type DLL struct {
+	left  *DLL
+	val   int
+	right *DLL
 }
 
-var head *Node = nil
-var last *Node = nil
-var NodeCnt int
+var root *DLL = nil
 
-func InserNodeEnd(x int) {
-	fmt.Println("Added node")
-	//var cur *Node = nil
-	var temp Node
-	//var temp *Node = nil
-	//temp =  New(Node)
-	fmt.Println("----")
-	temp.value = x
-	temp.next = nil
-	//fmt.Println("head   ", head)
-	//fmt.Printf("%p\n", head)
-	if head == nil {
-		NodeCnt = NodeCnt + 1
-		head = &temp
-		last = head
+func InsertFront(temp *DLL) {
+	if root == nil {
+		root = temp
 	} else {
-		NodeCnt = NodeCnt + 1
-		last.next = &temp
-		last = last.next
+		temp.right = root
+		root.left = temp
+		root = temp
 	}
-
 }
 
-func InsertFront(x int) {
-	fmt.Println(" \n Added node at Frond ")
-	//var cur *Node = nil
-	//var temp Node
-	var temp *Node = nil
-	temp = new(Node)
-	fmt.Println("----")
-	temp.value = x
-	temp.next = nil
-	fmt.Println("head   ", head)
-	fmt.Printf("%p\n", head)
-	if head == nil {
-		NodeCnt = NodeCnt + 1
-		head = temp
-		last = head
-	} else {
-		NodeCnt = NodeCnt + 1
-		temp.next = head
-		head = temp
+func Display() {
+	fmt.Print("DLL: ")
+	for node := root; node != nil; node = node.right {
+		fmt.Printf("%d ", node.val)
 	}
-
-}
-
-func InsertPos(x int, pos int) {
-	var cur *Node = head
-	var cnt int
-
-	if pos == 0 {
-		InsertFront(x)
-	} else if pos == NodeCnt {
-		InserNodeEnd(x)
-	} else {
-		var temp *Node = nil
-		temp = new(Node)
-		temp.value = x
-		temp.next = nil
-		for pos-1 != cnt {
-			cnt = cnt + 1
-			cur = cur.next
-		}
-		cur.next = temp
-	}
-
-}
-
-func display() {
-	if head == nil {
-		fmt.Println("Linked List is empty")
-	} else {
-		fmt.Println("\n Elements of linked list are:")
-		var cur *Node = head
-		for cur != nil {
-			fmt.Printf("%d ------->", cur.value)
-			cur = cur.next
-		}
-	}
+	fmt.Println()
 }
 
 func main() {
-	var choice int
-
 	for {
-		fmt.Println("Choice 1. InsertNode 2. Display 3. InsertFront 4.InserPos 5. exit")
-		fmt.Println("\n Enter choice")
-		fmt.Scan(&choice)
+		fmt.Println("1. InsertFront 2.Display 3.Exit")
+		var choice int
+		fmt.Print("Enter choice: ")
+		fmt.Scan(&choice) // only accept var
+
 		switch choice {
 		case 1:
-			var x int
-			fmt.Println("Enter value")
-			fmt.Scan(&x)
-			InserNodeEnd(x)
+			fmt.Print("Enter node value: ")
+			var ele int
+			fmt.Scan(&ele)
+
+			temp := new(DLL) // allocate and return value
+			temp.val = ele
+			temp.left = nil
+			temp.right = nil
+
+			InsertFront(temp)
+
 		case 2:
-			display()
+			Display()
 
 		case 3:
-			var x int
-			fmt.Println("Enter value")
-			fmt.Scan(&x)
-			InsertFront(x)
+			fmt.Println("Exiting...")
+			return
 
-		case 4:
-			var x, pos int
-			fmt.Println("Enter position and value")
-			fmt.Scan(&x, &pos)
-			InsertPos(x, pos)
-
-		case 5:
-			os.Exit(0)
-
+		default:
+			fmt.Println("Invalid choice")
 		}
 	}
 }
