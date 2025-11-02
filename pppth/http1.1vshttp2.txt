@@ -1,0 +1,42 @@
+| Feature        | HTTP/1.1                     | HTTP/2 (used by gRPC)                   |
+| -------------- | ---------------------------- | --------------------------------------- |
+| Multiplexing   | ❌ one request per connection | ✅ multiple concurrent streams           |
+| Binary framing | ❌ text-based                 | ✅ binary, efficient                     |
+| Streaming      | ❌ partial/one-way only       | ✅ full duplex (bidirectional streaming) |
+| Compression    | Limited                      | Header compression (HPACK)              |
+| Performance    | Moderate                     | Very high                               |
+
+
+--> What HTTP/2 Support Means
+For a Python framework to really support HTTP/2, it must:
+
+Run on a server that supports HTTP/2 framing (binary, multiplexed TCP layer).
+
+Handle ASGI (Asynchronous Server Gateway Interface) or similar protocol that can understand HTTP/2 events (streaming, push, etc.).
+
+Expose APIs compatible with HTTP/2 features — like server push and bidirectional streaming.
+
+
+| Framework       | HTTP/2 Support                              | Details                                                                                                                              |
+| --------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **FastAPI**     | ✅ *Partial / via Hypercorn or Uvicorn + h2* | FastAPI itself doesn’t handle HTTP/2, but if you run it with **Hypercorn** or **Uvicorn (with h2)**, it supports HTTP/2 connections. |
+| **Starlette**   | ✅ Same as FastAPI                           | Starlette is the core of FastAPI and supports HTTP/2 if the ASGI server does.                                                        |
+| **Quart**       | ✅ Full native support                       | Built on **asyncio + Hypercorn**, implements HTTP/2 (and HTTP/3) natively. Drop-in replacement for Flask but fully async.            |
+| **aiohttp**     | ✅ Client & Server support                   | Has both HTTP/2 client and server support with the `aiohttp` library.                                                                |
+| **Sanic**       | ✅ via `aioquic` / TLS                       | Native HTTP/2 support with async server using TLS.                                                                                   |
+| **Django**      | ❌ No native HTTP/2 (HTTP/1.1 only)          | Can only get partial HTTP/2 via reverse proxy (Nginx, Caddy).                                                                        |
+| **Flask**       | ❌ No native HTTP/2                          | Same as Django — requires external proxy (Gunicorn/Nginx).                                                                           |
+| **Tornado**     | ⚙️ Partial (experimental)                   | Supports HTTP/2 over SSL, but not all features (no multiplexing).                                                                    |
+| **GRPC Python** | ✅ Full (by design)                          | gRPC runs entirely on HTTP/2 protocol natively.                                                                                      |
+
+
+| Feature                 | **WSGI (Web Server Gateway Interface)** | **ASGI (Asynchronous Server Gateway Interface)** |
+| ----------------------- | --------------------------------------- | ------------------------------------------------ |
+| **Introduced**          | ~2003 (PEP 3333)                        | ~2018 (PEP 484 + PEP 800)                        |
+| **Designed For**        | **Synchronous** Python apps             | **Asynchronous + Synchronous** apps              |
+| **Concurrency Model**   | Threading or multiprocessing            | AsyncIO (non-blocking, event loop)               |
+| **Protocols Supported** | Only **HTTP/1.1**                       | **HTTP/1.1**, **HTTP/2**, **WebSockets**         |
+| **Example Frameworks**  | Django, Flask, Bottle                   | FastAPI, Starlette, Quart, Django ≥ 3.1          |
+| **Example Servers**     | Gunicorn, uWSGI, mod_wsgi               | Uvicorn, Hypercorn, Daphne                       |
+| **Real-time Support**   | ❌ No                                    | ✅ Yes (WebSockets, SSE, etc.)                    |
+| **I/O Blocking**        | Blocking                                | Non-blocking (async/await)                       |
