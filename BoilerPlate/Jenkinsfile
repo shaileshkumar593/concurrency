@@ -1,0 +1,45 @@
+pipeline {
+  agent any
+
+  environment {
+    IMAGE_NAME = "your-registry/your-username/gin-jwt-swagger"
+    TAG = "${env.BUILD_NUMBER}"
+    DOCKER_CREDENTIALS_ID = "dockerhub-creds"
+    K8S_CREDENTIALS_ID = "kubeconfig-cred"
+    K8S_NAMESPACE = "gin-jwt"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps { checkout scm }
+    }
+    stage('Test') {
+      steps { sh 'go test ./...' }
+    }
+    stage('Build Image') {
+      steps { sh "docker build -t ${IMAGE_NAME}:${TAG} ." }
+    }
+    stage('Push Image') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+          sh '''
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            docker push ${IMAGE_NAME}:${TAG}
+            docker logout
+          '''
+        }
+      }
+    }
+    stage('Deploy') {
+      steps {
+        withCredentials([file(credentialsId: env.K8S_CREDENTIALS_ID, variable: 'KUBECONFIG_FILE')]) {
+          sh '''
+            export KUBECONFIG=${KUBECONFIG_FILE}
+            kubectl -n ${K8S_NAMESPACE} set image deployment/gin-jwt-deployment gin-jwt=${IMAGE_NAME}:${TAG} --record || true
+            kubectl -n ${K8S_NAMESPACE} rollout status deployment/gin-jwt-deployment --timeout=120s
+          '''
+        }
+      }
+    }
+  }
+}
