@@ -7,7 +7,7 @@ import (
 )
 
 // worker performs CPU or IO work
-func worker(id int, jobs <-chan int, results chan<- int, wg *sync.WaitGroup) {
+func worker555(id int, jobs <-chan int, results chan<- int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	for job := range jobs {
 		time.Sleep(20 * time.Millisecond) // simulate work
@@ -26,7 +26,7 @@ func main() {
 	// Fan-Out: spawn workers
 	for i := 1; i <= workerCount; i++ {
 		wg.Add(1)
-		go worker(i, jobs, results, &wg)
+		go worker555(i, jobs, results, &wg)
 	}
 
 	// Producer
