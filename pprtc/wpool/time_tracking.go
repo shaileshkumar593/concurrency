@@ -14,7 +14,6 @@ func performTasks(ch chan string) {
 func main() {
 	taskChannel := make(chan string)
 	go performTasks(taskChannel)
-	go
 
 	for i := 0; i <= 5; i++ {
 		select {

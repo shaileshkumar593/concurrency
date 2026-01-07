@@ -8,10 +8,10 @@ import "fmt"
 func main() {
 
 	// Only for receiving
-	mychanl1 := make(<-chan string)
+	mychanl1 := make(<-chan string) // Read
 
 	// Only for sending
-	mychanl2 := make(chan<- string)
+	mychanl2 := make(chan<- string) // write
 
 	// Display the types of channels
 	fmt.Printf("%T", mychanl1)
