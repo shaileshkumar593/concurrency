@@ -47,3 +47,19 @@ func main() {
 	sorted := sortByFrequency(arr)
 	fmt.Println("Sorted by frequency:", sorted)
 }
+
+/*
+
+Important Map Iteration Variants
+1️⃣ Keys only
+for key := range freq {
+}
+2️⃣ Key and value
+for key, value := range freq {
+	fmt.Println(key, value)
+}
+3️⃣ Ignore key
+for _, value := range freq {
+}
+
+*/
