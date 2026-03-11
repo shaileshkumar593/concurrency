@@ -1,10 +1,8 @@
-package main 
-
-
-
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func removeDuplicates(arr []int) int {
 
