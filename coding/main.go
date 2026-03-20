@@ -89,113 +89,81 @@ o Invalid quantities (≤ 0) can be safely ignored or rejected
 */
 
 import (
+	"fmt"
 	"sync"
-	"testing"
 )
 
 type Inventory struct {
-	Qty    int
-	ItemId string
+	mu    sync.Mutex
+	stock map[string]int
 }
 
-var mu sync.Mutex
-
+// Constructor
 func NewInventory(initialStock map[string]int) *Inventory {
-	var s *Inventory
-	mu.Lock()
-	for key, val := range initialStock {
-		s.Qty = val
-		s.ItemId = key
+	// copy map to avoid external mutation
+	stockCopy := make(map[string]int)
+	for k, v := range initialStock {
+		stockCopy[k] = v
 	}
-	mu.Unlock()
 
-	return s
-
+	return &Inventory{
+		stock: stockCopy,
+	}
 }
 
-func TestNewInventory(t *testing.T) {
-	aa := map[string]int{
-		"toy": 50,
-	}
-	p := NewInventory(map[string]int{
-		"toy": 50})
-
-	if p == nil {
-		t.Error("Inventory not allocated properly")
-	}
-
-	if p.Qty == aa["toy"] {
-		t.Log("inventory allocated successfully")
-	}
-
-	if p.Qty < aa["toy"] || p.Qty > aa["toy"] {
-		t.Log("wrong Inventory allocation ")
-	}
-
-}
-
+// Reserve attempts to reserve qty units
 func (i *Inventory) Reserve(itemID string, qty int) bool {
-	mu.Lock()
-	var status bool
-	if i.Qty > qty {
-		status = true
-		i.Qty = i.Qty - qty
-	} else {
-		status = false
-	}
-	mu.Unlock()
-
-	return status
-}
-
-func TestReserve(t *testing.T) {
-
-	p := NewInventory(map[string]int{})
-
-	status := p.Reserve("toy", 10)
-
-	if status == true {
-		t.Log("successfully reserved ")
-	} else {
-		t.Log("Wrong allocation ")
+	if qty <= 0 {
+		return false
 	}
 
-}
+	i.mu.Lock()
+	defer i.mu.Unlock()
 
-// Release returns `qty` units of `itemID` back to inventory.
+	current := i.stock[itemID]
 
-func (i *Inventory) Release(itemID string, qty int) int {
-
-	mu.Lock()
-	i.Qty = i.Qty + qty
-	mu.Unlock()
-	return qty
-}
-
-func TestRelease(t *testing.T) {
-
-	p := NewInventory(map[string]int{})
-
-	qty := p.Release("toy", 3)
-
-	if qty == 3 {
-		t.Logf("Released %d resources ", qty)
-	} else {
-		t.Log("Wrong release ")
+	if current < qty {
+		return false
 	}
 
+	i.stock[itemID] = current - qty
+	return true
+}
+
+// Release adds qty back to inventory
+func (i *Inventory) Release(itemID string, qty int) {
+	if qty <= 0 {
+		return
+	}
+
+	i.mu.Lock()
+	defer i.mu.Unlock()
+
+	i.stock[itemID] += qty
 }
 
 func main() {
+	inv := NewInventory(map[string]int{
+		"itemA": 10,
+	})
 
-	m := map[string]int{
-		"toy": 10,
+	var wg sync.WaitGroup
+
+	// 20 concurrent reservations of 1 unit each
+	for i := 0; i < 20; i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+
+			if inv.Reserve("itemA", 1) {
+				fmt.Println("Reserved by goroutine", id)
+			} else {
+				fmt.Println("Failed by goroutine", id)
+			}
+		}(i)
 	}
 
-	inventory := NewInventory(m)
-	for i := 0; i < 3; i++ {
+	wg.Wait()
 
-		go inventory.Reserve("toy", 3)
-		go inventory.Release("toy", 3)
-	}
+	fmt.Println("Final stock:", inv.stock["itemA"])
 }
