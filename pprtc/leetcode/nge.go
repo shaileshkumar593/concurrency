@@ -140,4 +140,24 @@ Cleaner + intuitive + optimal
 🎯 Final Takeaway
 We move from right because NGE depends on future elements,
 and stack helps us reuse that information efficiently.
+
+
+arr = [4,5,2,10,8]
+
+Start from right:
+
+i=4 → 8 → stack empty → -1
+stack = [4]
+
+i=3 → 10 → pop 8 → stack empty → -1
+stack = [3]
+
+i=2 → 2 → next greater = 10
+stack = [3,2]
+
+i=1 → 5 → pop 2 → next greater = 10
+stack = [3,1]
+
+i=0 → 4 → next greater = 5
+stack = [3,1,0]
 */
