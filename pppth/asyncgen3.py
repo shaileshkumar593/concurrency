@@ -80,4 +80,9 @@ raise StopAsyncIteration
 → loop ends
 
 
+uvloop is a fast, drop-in replacement of the built-in asyncio event loop. uvloop is implemented in Cython and uses libuv under the hood.
+
+The project documentation can be found here. Please also check out the wiki.
+
+
 """
