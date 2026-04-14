@@ -13,6 +13,11 @@ func nextGreaterSteps(arr []int) []int {
 	for i := n - 1; i >= 0; i-- {
 
 		// Remove all elements <= current
+		/*
+		They can never be next greater
+
+		Current element is bigger → they are useless
+		*/
 		for len(stack) > 0 && arr[stack[len(stack)-1]] <= arr[i] {
 			stack = stack[:len(stack)-1]
 		}
