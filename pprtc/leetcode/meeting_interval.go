@@ -23,9 +23,9 @@ func canAttendMeetings(intervals [][]int) bool {
 
 		prevEnd := intervals[i-1][1]
 		currStart := intervals[i][0]
-
+		
 		// If current meeting starts before previous ends → overlap
-		if currStart < prevEnd {
+		if currStart <= prevEnd {
 			return false
 		}
 	}

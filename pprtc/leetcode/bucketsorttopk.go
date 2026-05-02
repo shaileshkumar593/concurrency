@@ -21,6 +21,7 @@ func topKFrequent(nums []int, k int) []int {
 	result := []int{}
 
 	for i := len(buckets) - 1; i >= 0 && len(result) < k; i-- {
+		fmt.Println(buckets[i])
 		for _, num := range buckets[i] {
 			result = append(result, num)
 			if len(result) == k {
@@ -38,4 +39,4 @@ func main() {
 	fmt.Println(topKFrequent(nums, k))
 }
 
-https://www.linkedin.com/in/shailesh-kumar-1a61ab3a/
+//https://www.linkedin.com/in/shailesh-kumar-1a61ab3a/

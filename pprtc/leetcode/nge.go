@@ -18,13 +18,15 @@ func nextGreaterSteps(arr []int) []int {
 
 		Current element is bigger → they are useless
 		*/
+		fmt.Println(stack)
+
 		for len(stack) > 0 && arr[stack[len(stack)-1]] <= arr[i] {
 			stack = stack[:len(stack)-1]
 		}
 
 		// Assign result
 		if len(stack) == 0 {
-			res[i] = 0
+			res[i] = -1
 		} else {
 			res[i] = stack[len(stack)-1] - i
 		}
@@ -37,7 +39,8 @@ func nextGreaterSteps(arr []int) []int {
 }
 
 func main() {
-	arr := []int{84, 74, 21, 19, 75, 66, 44, 55, 70, 34, 32, 29, 92, 4, 6, 105, 101}
+	//arr := []int{84, 74, 21, 19, 75, 66, 44, 55, 70, 34, 32, 29, 92, 4, 6, 105, 101}
+	arr := []int{4, 5, 2, 10, 8}
 
 	result := nextGreaterSteps(arr)
 
