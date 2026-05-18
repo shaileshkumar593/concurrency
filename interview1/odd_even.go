@@ -18,9 +18,9 @@ func printOdd(wg *sync.WaitGroup, oddCh, evenCh chan struct{}) {
 func printEven(wg *sync.WaitGroup, oddCh, evenCh chan struct{}) {
 	defer wg.Done()
 
-	for i := 2; i <= 10; i += 2 {
-		<-evenCh             // wait for turn
-		fmt.Println(i)       // print even
+	for i := 0; i <= 10; i += 2 {
+		<-evenCh       // wait for turn
+		fmt.Println(i) // print even
 		if i != 10 {
 			oddCh <- struct{}{} // signal odd
 		}

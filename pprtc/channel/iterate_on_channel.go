@@ -18,6 +18,15 @@ func main() {
 	for val := range ch {
 		fmt.Println(val)
 	}
+
+	/*
+		keeps receiving from channel
+
+		automatically stops when channel is closed
+
+		If channel is NOT closed → infinite wait (deadlock)
+	*/
+
 }
 
 /*

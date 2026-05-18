@@ -10,7 +10,7 @@ type Node struct {
 	link *Node //
 }
 
-var first Node
+var first1 Node
 var cnt int = 0
 
 func inserfront(ele int) {
@@ -20,13 +20,13 @@ func inserfront(ele int) {
 	temp.link = nil
 	fmt.Println("node   ", temp)
 
-	if &first == nil {
+	if &first1 == nil {
 		fmt.Println("List is empty  ")
-		first = temp
+		first1 = temp
 		cnt = cnt + 1
 	} else {
-		temp.link = &first
-		first = temp
+		temp.link = &first1
+		first1 = temp
 		cnt = cnt + 1
 	}
 }
@@ -35,7 +35,7 @@ func display() {
 	if cnt == 0 {
 		fmt.Println("List is empty ")
 	} else {
-		cur := &first
+		cur := &first1
 
 		for cur != nil {
 			fmt.Print(cur.data, "--->")
@@ -53,7 +53,7 @@ func deleteNode() {
 	if cnt < node_cnt {
 		fmt.Println("Node count not available")
 	} else {
-		cur := &first
+		cur := &first1
 		cnt1 := 1 //
 		for cur != nil {
 			if cnt1 == node_cnt {
